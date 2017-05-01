@@ -55,4 +55,6 @@ dependencies {
     implementation 'com.melnykov:floatingactionbutton:1.2.0'
     androidTestImplementation 'com.android.support:support-v4:26.1.0'
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.2.1'
+    annotationProcessor "org.immutables:value:2.4.3" // <-- for annotation processor
+    compileOnly "org.immutables:value:2.4.3" // <-- for annotation API
 }

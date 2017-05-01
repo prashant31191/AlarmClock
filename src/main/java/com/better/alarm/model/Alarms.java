@@ -40,6 +40,7 @@ import com.better.alarm.model.interfaces.IAlarmsManager;
 import com.better.alarm.model.interfaces.Intents;
 import com.better.alarm.model.persistance.AlarmContainer;
 import com.github.androidutils.logger.Logger;
+import com.github.androidutils.statemachine.HandlerFactory;
 
 /**
  * The Alarms implements application domain logic
@@ -65,11 +66,13 @@ public class Alarms implements IAlarmsManager {
     private final AlarmStateNotifier broadcaster;
 
     private final DatabaseRetryCountDownTimer databaseRetryCountDownTimer;
+    private final HandlerFactory handlerFactory;
 
     Alarms(Context context, Logger logger, IAlarmsScheduler alarmsScheduler) {
         mContext = context;
         log = logger;
         mAlarmsScheduler = alarmsScheduler;
+        handlerFactory = new MainLooperHandlerFactory();
 
         mContentResolver = mContext.getContentResolver();
         alarms = new HashMap<Integer, AlarmCore>();
@@ -96,7 +99,7 @@ public class Alarms implements IAlarmsManager {
                 if (cursor.moveToFirst()) {
                     do {
                         AlarmContainer container = new AlarmContainer(cursor, log, mContext);
-                        final AlarmCore a = new AlarmCore(container, mContext, log, mAlarmsScheduler, broadcaster);
+                        final AlarmCore a = new AlarmCore(container, mContext, log, mAlarmsScheduler, broadcaster, handlerFactory);
                         alarms.put(a.getId(), a);
                     } while (cursor.moveToNext());
                 }
@@ -137,7 +140,7 @@ public class Alarms implements IAlarmsManager {
     @Override
     public Alarm createNewAlarm() {
         AlarmContainer container = new AlarmContainer(log, mContext);
-        AlarmCore alarm = new AlarmCore(container, mContext, log, mAlarmsScheduler, broadcaster);
+        AlarmCore alarm = new AlarmCore(container, mContext, log, mAlarmsScheduler, broadcaster, handlerFactory);
         alarms.put(alarm.getId(), alarm);
         notifyAlarmListChangedListeners();
         return alarm;
@@ -212,7 +215,6 @@ public class Alarms implements IAlarmsManager {
      * A convenience method to enable or disable an alarm
      *
      * @param enable corresponds to the ENABLED column
-     * @throws AlarmNotFoundException
      */
     @Override
     public void enable(Alarm alarm, boolean enable) {
