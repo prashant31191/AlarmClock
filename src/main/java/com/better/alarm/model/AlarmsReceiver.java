@@ -15,57 +15,22 @@
  */
 package com.better.alarm.model;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
 
-import com.better.alarm.model.compat.JobIntentService;
 import com.better.alarm.model.interfaces.AlarmNotFoundException;
 import com.better.alarm.model.interfaces.PresentationToModelIntents;
 import com.github.androidutils.logger.Logger;
-import com.github.androidutils.wakelock.WakeLockManager;
 
-public class AlarmsService extends JobIntentService implements Handler.Callback {
-    /**
-     * TODO SM should report when it is done
-     */
-    private static final int WAKELOCK_HOLD_TIME = 3000;
-    private static final int EVENT_RELEASE_WAKELOCK = 1;
-    private static int JOB_ID = 1;
-    Alarms alarms;
-    private Logger log;
-    private Handler handler;
-
-    /**
-     * Dispatches intents to the KlaxonService
-     */
-    public static class Receiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            Logger.getDefaultLogger().d("Got intent " + intent.getAction());
-            intent.setClass(context, AlarmsService.class);
-            WakeLockManager.getWakeLockManager().acquirePartialWakeLock(intent, "AlarmsService");
-            JobIntentService.enqueueWork(context, AlarmsService.class, JOB_ID, intent, 200);
-        }
-    }
-
+public class AlarmsReceiver extends BroadcastReceiver {
     @Override
-    public void onCreate() {
-        alarms = AlarmsManager.getInstance();
-        log = Logger.getDefaultLogger();
-        handler = new Handler(this);
-        super.onCreate();
-    }
+    public void onReceive(final Context context, final Intent intent) {
+        Logger.getDefaultLogger().d("Got intent " + intent.getAction());
 
-    @Override
-    protected void onHandleWork(@NonNull Intent intent) {
+        Alarms alarms = AlarmsManager.getInstance();
+        Logger log = Logger.getDefaultLogger();
+
         try {
             String action = intent.getAction();
             if (action.equals(AlarmsScheduler.ACTION_FIRED)) {
@@ -91,20 +56,9 @@ public class AlarmsService extends JobIntentService implements Handler.Callback 
             } else if (action.equals(PresentationToModelIntents.ACTION_REQUEST_DISMISS)) {
                 int id = intent.getIntExtra(AlarmsScheduler.EXTRA_ID, -1);
                 alarms.getAlarm(id).dismiss();
-
             }
         } catch (AlarmNotFoundException e) {
             Logger.getDefaultLogger().d("Alarm not found");
         }
-
-        Message msg = handler.obtainMessage(EVENT_RELEASE_WAKELOCK);
-        msg.obj = intent;
-        handler.sendMessageDelayed(msg, WAKELOCK_HOLD_TIME);
-    }
-
-    @Override
-    public boolean handleMessage(Message msg) {
-        WakeLockManager.getWakeLockManager().releasePartialWakeLock((Intent) msg.obj);
-        return true;
     }
 }

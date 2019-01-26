@@ -264,7 +264,7 @@ public class AlarmsScheduler implements IAlarmsScheduler {
 
     private void setUpRTCAlarm(ScheduledAlarm alarm) {
         log.d("Set " + alarm.toString());
-        Intent intent = new Intent(mContext, AlarmsService.Receiver.class);
+        Intent intent = new Intent(mContext, AlarmsReceiver.class);
         intent.setAction(ACTION_FIRED);
         intent.putExtra(EXTRA_ID, alarm.id);
         intent.putExtra(EXTRA_TYPE, alarm.type.name());

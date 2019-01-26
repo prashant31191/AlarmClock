@@ -72,7 +72,7 @@ public class Alarms implements IAlarmsManager {
         mContext = context;
         log = logger;
         mAlarmsScheduler = alarmsScheduler;
-        handlerFactory = new MainLooperHandlerFactory();
+        handlerFactory = new ImmedeateHandlerFactory();
 
         mContentResolver = mContext.getContentResolver();
         alarms = new HashMap<Integer, AlarmCore>();

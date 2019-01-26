@@ -53,7 +53,7 @@ import com.github.androidutils.statemachine.StateMachine;
  * {@link Intents#ALARM_PREALARM_ACTION} or {@link Intents#ALARM_DISMISS_ACTION}
  * . State and properties of the alarm are stored in the database and are
  * updated every time when changes to alarm happen.
- * 
+ *
  * <pre>
  * @startuml
  * State DISABLED
@@ -72,12 +72,12 @@ import com.github.androidutils.statemachine.StateMachine;
  * PREALARM_SNOOZED :timer
  * PREALARM_SET :timer
  * SET :timer
- * 
+ *
  * DISABLED -down-> ENABLE :enable\nchange
  * ENABLED -up-> DISABLED :disable
  * ENABLED -up-> RESCHEDULE :dismiss
  * ENABLED -up-> ENABLE :change\nrefresh
- * 
+ *
  * PREALARM_SET -down-> PREALARM_FIRED :fired
  * PREALARM_FIRED -down-> PREALARM_SNOOZED :snooze
  * PREALARM_SNOOZED -up-> FIRED
@@ -85,20 +85,19 @@ import com.github.androidutils.statemachine.StateMachine;
  * PREALARM_FIRED --right--> FIRED :fired
  * FIRED -down->  SNOOZED :snooze
  * SNOOZED -up-> FIRED :fired
- * 
+ *
  * RESCHEDULE -up-> DISABLED :disabled
- * 
+ *
  * RESCHEDULE -down-> PREALARM_SET :PA
  * RESCHEDULE -down-> SET :nPA
  * ENABLE -down-> PREALARM_SET :PA
  * ENABLE -down-> SET :nPA
- * 
- * } 
+ *
+ * }
  * @enduml
  * </pre>
- * 
+ *
  * @author Yuriy
- * 
  */
 public final class AlarmCore implements Alarm {
 
@@ -139,8 +138,12 @@ public final class AlarmCore implements Alarm {
         this.broadcaster = broadcaster;
         this.df = new SimpleDateFormat("dd-MM-yy HH:mm:ss", Locale.GERMANY);
 
-        PreferenceManager.getDefaultSharedPreferences(mContext).registerOnSharedPreferenceChangeListener(
-                mOnSharedPreferenceChangeListener);
+        try {
+            PreferenceManager.getDefaultSharedPreferences(mContext).registerOnSharedPreferenceChangeListener(
+                    mOnSharedPreferenceChangeListener);
+        } catch (Exception e) {
+            //TODO fix this
+        }
 
         stateMachine = new AlarmStateMachine(container.getState(), "Alarm " + container.getId(), handlerFactory);
         // we always resume SM. This means that initial state will not receive
@@ -165,11 +168,18 @@ public final class AlarmCore implements Alarm {
     };
 
     private void fetchPreAlarmMinutes() {
-        String asString = PreferenceManager.getDefaultSharedPreferences(mContext).getString("prealarm_duration", "30");
-        prealarmMinutes = Integer.parseInt(asString);
+        try {
+            String asString = PreferenceManager.getDefaultSharedPreferences(mContext).getString("prealarm_duration", "30");
+            prealarmMinutes = Integer.parseInt(asString);
+        } catch (Exception e) {
+            // TODO fix this
+            prealarmMinutes = 30;
+        }
     }
 
-    /** SM to handle Alarm states */
+    /**
+     * SM to handle Alarm states
+     */
     private class AlarmStateMachine extends StateMachine {
         public static final int ENABLE = 1;
         public static final int DISABLE = 2;
@@ -268,7 +278,9 @@ public final class AlarmCore implements Alarm {
             }
         }
 
-        /** Master state for all enabled states. Handles disable and delete */
+        /**
+         * Master state for all enabled states. Handles disable and delete
+         */
         private class EnabledState extends AlarmState {
             @Override
             protected void onChange(AlarmChangeData changeData) {
@@ -388,18 +400,25 @@ public final class AlarmCore implements Alarm {
             }
         }
 
-        /** handles both snoozed and main for now */
+        /**
+         * handles both snoozed and main for now
+         */
         private class FiredState extends AlarmState {
             @Override
             public void enter() {
                 broadcastAlarmState(Intents.ALARM_ALERT_ACTION);
-                int autoSilenceMinutes = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString("auto_silence", "10"));
-                if (autoSilenceMinutes > 0) {
-                    // -1 means OFF
-                    Calendar nextTime = Calendar.getInstance();
-                    nextTime.add(Calendar.MINUTE, autoSilenceMinutes);
-                    setAlarm(nextTime, CalendarType.AUTOSILENCE);
+                try {
+
+                    int autoSilenceMinutes = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext)
+                            .getString("auto_silence", "10"));
+                    if (autoSilenceMinutes > 0) {
+                        // -1 means OFF
+                        Calendar nextTime = Calendar.getInstance();
+                        nextTime.add(Calendar.MINUTE, autoSilenceMinutes);
+                        setAlarm(nextTime, CalendarType.AUTOSILENCE);
+                    }
+                } catch (Exception e) {
+                    // TODO fix this
                 }
             }
 
@@ -684,41 +703,41 @@ public final class AlarmCore implements Alarm {
             public final boolean processMessage(Message msg) {
                 handled = true;
                 switch (msg.what()) {
-                case ENABLE:
-                    onEnable();
-                    break;
-                case DISABLE:
-                    onDisable();
-                    break;
-                case SNOOZE:
-                    onSnooze();
-                    break;
-                case DISMISS:
-                    onDismiss();
-                    break;
-                case CHANGE:
-                    onChange((AlarmChangeData) msg.obj().get());
-                    break;
-                case FIRED:
-                    onFired();
-                    break;
-                case PREALARM_DURATION_CHANGED:
-                    onPreAlarmDurationChanged();
-                    break;
-                case PREALARM_TIMED_OUT:
-                    onPreAlarmTimedOut();
-                    break;
-                case REFRESH:
-                    onRefresh();
-                    break;
-                case TIME_SET:
-                    onTimeSet();
-                    break;
-                case DELETE:
-                    onDelete();
-                    break;
-                default:
-                    throw new RuntimeException("Handling of message code " + msg.what() + " is not implemented");
+                    case ENABLE:
+                        onEnable();
+                        break;
+                    case DISABLE:
+                        onDisable();
+                        break;
+                    case SNOOZE:
+                        onSnooze();
+                        break;
+                    case DISMISS:
+                        onDismiss();
+                        break;
+                    case CHANGE:
+                        onChange((AlarmChangeData) msg.obj().get());
+                        break;
+                    case FIRED:
+                        onFired();
+                        break;
+                    case PREALARM_DURATION_CHANGED:
+                        onPreAlarmDurationChanged();
+                        break;
+                    case PREALARM_TIMED_OUT:
+                        onPreAlarmTimedOut();
+                        break;
+                    case REFRESH:
+                        onRefresh();
+                        break;
+                    case TIME_SET:
+                        onTimeSet();
+                        break;
+                    case DELETE:
+                        onDelete();
+                        break;
+                    default:
+                        throw new RuntimeException("Handling of message code " + msg.what() + " is not implemented");
                 }
                 return handled;
             }

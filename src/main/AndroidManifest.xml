@@ -170,7 +170,7 @@
 
         <!-- Model -->
         <receiver
-            android:name=".model.AlarmsService$Receiver"
+            android:name=".model.AlarmsReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="${applicationId}.ACTION_FIRED" />
@@ -183,11 +183,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <service
-            android:name=".model.AlarmsService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false" >
-        </service>
         <!-- Persistence -->
         <provider
             android:name=".model.persistance.AlarmProvider"

@@ -1,16 +1,12 @@
 package com.better.alarm;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.better.alarm.model.AlarmsService;
 import com.better.alarm.model.interfaces.Intents;
-import com.better.alarm.presenter.InfoFragment;
-import com.better.alarm.presenter.alert.AlarmAlertFullScreen;
 import com.better.alarm.presenter.alert.AlarmAlertReceiver;
 import com.better.alarm.presenter.background.KlaxonService;
 import com.better.alarm.presenter.background.ScheduledReceiver;
