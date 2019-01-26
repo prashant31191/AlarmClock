@@ -16,18 +16,14 @@
 package com.better.alarm;
 
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.ViewConfiguration;
 
 import com.better.alarm.model.AlarmsManager;
 import com.better.alarm.presenter.DynamicThemeHandler;
 import com.better.alarm.presenter.alert.AlarmAlertReceiver;
-import com.better.alarm.presenter.background.VibrationService;
-import com.github.androidutils.logger.LogcatLogWriterWithLines;
+import com.github.androidutils.logger.LogcatLogWriter;
 import com.github.androidutils.logger.Logger;
 import com.github.androidutils.logger.LoggingExceptionHandler;
 import com.github.androidutils.logger.StartupLogWriter;
@@ -77,7 +73,7 @@ public class AlarmApplication extends Application {
         }
 
         Logger logger = Logger.getDefaultLogger();
-        logger.addLogWriter(LogcatLogWriterWithLines.getInstance());
+        logger.addLogWriter(LogcatLogWriter.getInstance());
         logger.addLogWriter(StartupLogWriter.getInstance());
         LoggingExceptionHandler.addLoggingExceptionHandlerToAllThreads(logger);
 
