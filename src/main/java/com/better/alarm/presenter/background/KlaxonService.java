@@ -73,7 +73,7 @@ public class KlaxonService extends Service {
     public static class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            intent.setClass(context, KlaxonService.class);
+            intent.setClass(context, AlertServiceWrapper.class);
             WakeLockManager.getWakeLockManager().acquirePartialWakeLock(intent, "ForKlaxonService");
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 context.startForegroundService(intent);

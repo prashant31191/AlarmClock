@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.better.alarm.model.interfaces.Intents;
 import com.better.alarm.presenter.alert.AlarmAlertReceiver;
-import com.better.alarm.presenter.background.KlaxonService;
+import com.better.alarm.presenter.background.AlertServiceWrapper;
 import com.better.alarm.presenter.background.ScheduledReceiver;
 import com.better.alarm.presenter.background.ToastPresenter;
 import com.better.alarm.presenter.background.VibrationService;
@@ -47,17 +47,17 @@ public class Broadcasts {
         actionToRecievers.get(Intents.ALARM_DISMISS_ACTION).add(AlarmAlertReceiver.class);
         actionToRecievers.get(Intents.ACTION_SOUND_EXPIRED).add(AlarmAlertReceiver.class);
 
-        actionToRecievers.get(Intents.ALARM_ALERT_ACTION).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ALARM_PREALARM_ACTION).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ALARM_SNOOZE_ACTION).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ALARM_DISMISS_ACTION).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_SOUND_EXPIRED).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_START_PREALARM_SAMPLE).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_STOP_PREALARM_SAMPLE).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_START_ALARM_SAMPLE).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_STOP_ALARM_SAMPLE).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_MUTE).add(KlaxonService.Receiver.class);
-        actionToRecievers.get(Intents.ACTION_DEMUTE).add(KlaxonService.Receiver.class);
+        actionToRecievers.get(Intents.ALARM_ALERT_ACTION).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ALARM_PREALARM_ACTION).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ALARM_SNOOZE_ACTION).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ALARM_DISMISS_ACTION).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_SOUND_EXPIRED).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_START_PREALARM_SAMPLE).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_STOP_PREALARM_SAMPLE).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_START_ALARM_SAMPLE).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_STOP_ALARM_SAMPLE).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_MUTE).add(AlertServiceWrapper.Receiver.class);
+        actionToRecievers.get(Intents.ACTION_DEMUTE).add(AlertServiceWrapper.Receiver.class);
 
         actionToRecievers.get(Intents.ALARM_ALERT_ACTION).add(VibrationService.Receiver.class);
         actionToRecievers.get(Intents.ALARM_SNOOZE_ACTION).add(VibrationService.Receiver.class);

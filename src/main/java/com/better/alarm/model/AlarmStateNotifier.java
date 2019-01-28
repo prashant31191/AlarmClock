@@ -1,18 +1,11 @@
 package com.better.alarm.model;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.better.alarm.Broadcasts;
 import com.better.alarm.model.AlarmCore.IStateNotifier;
 import com.better.alarm.model.interfaces.Intents;
-import com.better.alarm.presenter.alert.AlarmAlertFullScreen;
-import com.better.alarm.presenter.alert.AlarmAlertReceiver;
-import com.better.alarm.presenter.background.KlaxonService;
-import com.better.alarm.presenter.background.ScheduledReceiver;
-import com.better.alarm.presenter.background.VibrationService;
 
 /**
  * Broadcasts alarm state with an intent

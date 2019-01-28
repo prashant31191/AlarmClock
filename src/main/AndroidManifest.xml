@@ -107,7 +107,7 @@
 
         <!-- KlaxonPresenter plays sound -->
         <receiver
-            android:name=".presenter.background.KlaxonService$Receiver"
+            android:name=".presenter.background.AlertServiceWrapper$Receiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="${applicationId}.ALARM_ALERT" />
@@ -124,7 +124,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".presenter.background.KlaxonService"
+            android:name=".presenter.background.AlertServiceWrapper"
             android:description="@string/alarm_klaxon_service_desc"
             android:enabled="true"
             android:exported="false" >
